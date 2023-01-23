@@ -7,20 +7,25 @@ import GroupList from "./groupList";
 import SearchStatus from "./searchStatus";
 import UserTable from "./usersTable";
 import _ from "lodash";
+import Search from "./search";
+
 const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfession] = useState();
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
+    const [searchStatus, setSearchStatus] = useState("");
     const pageSize = 8;
-
     const [users, setUsers] = useState();
+
     useEffect(() => {
         api.users.fetchAll().then((data) => setUsers(data));
     }, []);
+
     const handleDelete = (userId) => {
         setUsers(users.filter((user) => user._id !== userId));
     };
+
     const handleToggleBookMark = (id) => {
         const newArray = users.map((user) => {
             if (user._id === id) {
@@ -32,7 +37,9 @@ const UsersList = () => {
     };
 
     useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfession(data));
+        api.professions.fetchAll().then((data) => {
+            setProfession(data);
+        });
     }, []);
 
     useEffect(() => {
@@ -40,7 +47,13 @@ const UsersList = () => {
     }, [selectedProf]);
 
     const handleProfessionSelect = (item) => {
+        setSearchStatus("");
         setSelectedProf(item);
+    };
+
+    const handleSearchStatus = ({ target }) => {
+        setSelectedProf(undefined);
+        setSearchStatus(target.value);
     };
 
     const handlePageChange = (pageIndex) => {
@@ -51,18 +64,23 @@ const UsersList = () => {
     };
 
     if (users) {
-        const filteredUsers = selectedProf
-            ? users.filter(
-                (user) =>
-                    JSON.stringify(user.profession) === JSON.stringify(selectedProf)
-            )
-            : users;
+        const filteredUsers = () => {
+            if (selectedProf) {
+                return users.filter((user) => user.profession._id === selectedProf._id);
+            }
+            if (searchStatus) {
+                return users.filter((user) =>
+                    user.name.toLowerCase().includes(searchStatus.toLowerCase())
+                );
+            }
+            return users;
+        };
 
-        const count = filteredUsers.length;
-        const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+        const count = filteredUsers().length;
+        const sortedUsers = _.orderBy(filteredUsers(), [sortBy.path], [sortBy.order]);
         const usersCrop = paginate(sortedUsers, currentPage, pageSize);
         const clearFilter = () => {
-            setSelectedProf();
+            setSelectedProf(undefined);
         };
 
         return (
@@ -83,6 +101,11 @@ const UsersList = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
+                    <Search
+                        value= {searchStatus}
+                        placeholder = 'Введите имя для поиска..'
+                        onChange={handleSearchStatus}
+                    />
                     {count > 0 && (
                         <UserTable
                             users={usersCrop}

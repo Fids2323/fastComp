@@ -37,12 +37,12 @@ TextField.defaultProps = {
     type: "text"
 };
 TextField.propTypes = {
-    label: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired,
-    error: PropTypes.string.isRequired
+    label: PropTypes.string,
+    type: PropTypes.string,
+    value: PropTypes.string,
+    name: PropTypes.string,
+    onChange: PropTypes.func,
+    error: PropTypes.string
 };
 
 export default TextField;
