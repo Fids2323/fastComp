@@ -61,7 +61,11 @@ const LoginForm = () => {
         if (!isValid) return;
         try {
             await singIn(data);
-            history.push("/");
+            history.push(
+                history.location.state.from.pathname
+                    ? history.location.state.from.pathname
+                    : "/"
+            );
         } catch (error) {
             setErrors(error);
         }
