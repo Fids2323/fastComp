@@ -4,9 +4,13 @@ import TextField from "../common/form/textField";
 import SelectField from "../common/form/selectField";
 import MultiSelectField from "../common/form/multiSelectField";
 import RadioField from "../common/form/radioFiels";
-import { useProfession } from "../../hooks/useProfession";
-import { useQualities } from "../../hooks/useQualities";
 import { useAuth } from "../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { getQualities, getQualitiesLoadingStatus } from "../../store/qualities";
+import {
+    getProfessions,
+    getProfessionsLoadingStatus
+} from "../../store/professions";
 
 const EditUserPage = () => {
     const { currentUser, updateUserData } = useAuth();
@@ -20,8 +24,10 @@ const EditUserPage = () => {
     });
     const params = useParams();
     const { userId } = params;
-    const { professions } = useProfession();
-    const { qualities } = useQualities();
+    const professions = useSelector(getProfessions());
+    const professionsLoading = useSelector(getProfessionsLoadingStatus());
+    const qualities = useSelector(getQualities());
+    const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
     const history = useHistory();
 
     useEffect(() => {
@@ -53,7 +59,7 @@ const EditUserPage = () => {
     const handleBackHistory = () => {
         history.goBack();
     };
-    if (currentUser && professions.length !== 0 && qualities.length !== 0) {
+    if (currentUser && !professionsLoading && !qualitiesLoading) {
         const defaultQualities = () => {
             return currentUser.qualities.map((qualitie) => {
                 const qualitieData = qualities.find((i) => i._id === qualitie);

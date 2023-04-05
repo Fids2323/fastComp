@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import httpService from "./http.service";
 const commentEndpoint = "comments/";
 const commentService = {
@@ -11,7 +12,6 @@ const commentService = {
     getComments: async (pageId) => {
         const { data } = await httpService.get(commentEndpoint, {
             params: {
-                // eslint-disable-next-line quotes
                 orderBy: '"pageId"',
                 equalTo: `"${pageId}"`
             }

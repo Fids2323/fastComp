@@ -8,13 +8,20 @@ import UsersTable from "../../ui/usersTable";
 import _ from "lodash";
 import SearchBar from "../../common/searchBar";
 import { useUsers } from "../../../hooks/useUsers";
-import { useProfession } from "../../../hooks/useProfession";
 import { useAuth } from "../../../hooks/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    getProfessions,
+    getProfessionsLoadingStatus,
+    loadProfessionsList
+} from "../../../store/professions";
 
 const usersListPage = () => {
+    const dispatch = useDispatch();
     const { users } = useUsers();
     const { currentUser } = useAuth();
-    const { professions } = useProfession();
+    const professions = useSelector(getProfessions());
+    const professionsLoading = useSelector(getProfessionsLoadingStatus());
     const [selectedProf, setSelectedProf] = useState();
     const [currentPage, setCurrentPage] = useState(1);
     const [searchStatus, setSearchStatus] = useState("");
@@ -22,7 +29,9 @@ const usersListPage = () => {
     const pageSize = 8;
 
     const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
-
+    useEffect(() => {
+        dispatch(loadProfessionsList());
+    }, []);
     useEffect(() => {
         setCurrentPage(1);
     }, [selectedProf]);
@@ -58,12 +67,10 @@ const usersListPage = () => {
         setSearchStatus(event.target.value);
     };
 
-    if (users) {
+    if (users && !professionsLoading) {
         function filterUsers(data) {
             const filteredUsers = selectedProf
-                ? data.filter(
-                      (user) => user.profession._id === selectedProf._id
-                  )
+                ? data.filter((user) => user.profession === selectedProf._id)
                 : searchStatus
                 ? data.filter((user) =>
                       user.name

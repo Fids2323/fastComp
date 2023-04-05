@@ -9,34 +9,34 @@ import CommentsList from "../../ui/commentsList";
 import { useUsers } from "../../../hooks/useUsers";
 import CommentsProvider from "../../../hooks/useComments";
 const UserPage = ({ userId }) => {
-    const history = useHistory();
-    const { getUserById } = useUsers();
-    const user = getUserById(userId);
+  const history = useHistory();
+  const { getUserById } = useUsers();
+  const user = getUserById(userId);
 
-    const handleEditUser = () => {
-        history.push("/users/" + userId + "/edit");
-    };
-    if (user) {
-        return (
-            <div className="container">
-                <div className="row gutters-sm">
-                    <div className="col-md-4 mb-3">
-                        <UserCard user={user} onChange={handleEditUser} />
-                        <QualitiesCard qualities={user.qualities} />
-                        <MeetingsCard number={user.completedMeetings} />
-                    </div>
-                    <div className="col-md-8">
-                        <CommentsProvider>
-                            <CommentsList />
-                        </CommentsProvider>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-    return "Загрузка...";
+  const handleEditUser = () => {
+    history.push("/users/" + userId + "/edit");
+  };
+  if (user) {
+    return (
+      <div className="container">
+        <div className="row gutters-sm">
+          <div className="col-md-4 mb-3">
+            <UserCard user={user} onChange={handleEditUser} />
+            <QualitiesCard qualities={user.qualities} />
+            <MeetingsCard number={user.completedMeetings} />
+          </div>
+          <div className="col-md-8">
+            <CommentsProvider>
+              <CommentsList />
+            </CommentsProvider>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return "Загрузка...";
 };
 UserPage.propTypes = {
-    userId: PropTypes.string
+  userId: PropTypes.string
 };
 export default UserPage;
