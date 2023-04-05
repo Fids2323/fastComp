@@ -5,17 +5,16 @@ import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioFiels";
 import MultiSelectField from "../common/form/multiSelectField";
 import CheckBoxField from "../common/form/checkBoxField";
-import { useAuth } from "../../hooks/useAuth";
-import { useHistory } from "react-router-dom";
 import { getQualities, getQualitiesLoadingStatus } from "../../store/qualities";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getProfessions,
   getProfessionsLoadingStatus
 } from "../../store/professions";
+import { singUp } from "../../store/users";
 
 const RegisterForm = () => {
-  const history = useHistory();
+  const dispatch = useDispatch();
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -28,7 +27,6 @@ const RegisterForm = () => {
   const [errors, setErrors] = useState({});
   const professions = useSelector(getProfessions());
   const professionsLoading = useSelector(getProfessionsLoadingStatus());
-  const { singUp } = useAuth();
   const qualities = useSelector(getQualities());
   const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
   const qualitiesList = qualities.map((item) => ({
@@ -40,17 +38,12 @@ const RegisterForm = () => {
     setData((prevState) => ({ ...prevState, [target.name]: target.value }));
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const isValid = validate();
     if (!isValid) return;
     const newData = { ...data, qualities: data.qualities.map((i) => i.value) };
-    try {
-      await singUp(newData);
-      history.push("/");
-    } catch (error) {
-      setErrors(error);
-    }
+    dispatch(singUp(newData));
   };
   useEffect(() => {
     validate();

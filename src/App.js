@@ -1,5 +1,5 @@
 import Users from "./layouts/users";
-import React, { useEffect } from "react";
+import React from "react";
 import NavBar from "./components/ui/navBar";
 import { Route, Switch } from "react-router-dom";
 import Main from "./layouts/main";
@@ -11,40 +11,38 @@ import QualitiesProvider from "./hooks/useQualities";
 import AuthProvider from "./hooks/useAuth";
 import ProtectedRoute from "./components/common/protectedRoute";
 import LogOut from "./layouts/logOut";
-import { useDispatch } from "react-redux";
-import { loadQualitiesList } from "./store/qualities";
-import { loadProfessionsList } from "./store/professions";
+import AppLoader from "./components/ui/hoc/appLoader";
 
 function App() {
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(loadQualitiesList());
-        dispatch(loadProfessionsList());
-    }, []);
     return (
         <>
-            <AuthProvider>
-                <NavBar />
-                <ProfessionProvider>
-                    <QualitiesProvider>
-                        <Switch>
-                            <Route path="/login/:type?" component={Login} />
-                            <ProtectedRoute
-                                path="/users/:userId/edit"
-                                component={EditUserPage}
-                            />
-                            <ProtectedRoute
-                                path="/users/:userId"
-                                component={Users}
-                            />
-                            <ProtectedRoute path="/users" component={Users} />
-                            <Route path="/logout" component={LogOut} />
-                            <Route path="/" component={Main} />
-                        </Switch>
-                    </QualitiesProvider>
-                </ProfessionProvider>
-            </AuthProvider>
-            <ToastContainer />
+            <AppLoader>
+                <AuthProvider>
+                    <NavBar />
+                    <ProfessionProvider>
+                        <QualitiesProvider>
+                            <Switch>
+                                <Route path="/login/:type?" component={Login} />
+                                <ProtectedRoute
+                                    path="/users/:userId/edit"
+                                    component={EditUserPage}
+                                />
+                                <ProtectedRoute
+                                    path="/users/:userId"
+                                    component={Users}
+                                />
+                                <ProtectedRoute
+                                    path="/users"
+                                    component={Users}
+                                />
+                                <Route path="/logout" component={LogOut} />
+                                <Route path="/" component={Main} />
+                            </Switch>
+                        </QualitiesProvider>
+                    </ProfessionProvider>
+                </AuthProvider>
+                <ToastContainer />
+            </AppLoader>
         </>
     );
 }

@@ -37,7 +37,7 @@ function isOutdated(date) {
 }
 
 export const loadQualitiesList = () => async (dispatch, getState) => {
-    const { lastFetch } = getState().qualitiesReducer;
+    const { lastFetch } = getState().qualities;
     if (isOutdated(lastFetch)) {
         dispatch(qualitiesRequested());
         try {
@@ -50,15 +50,15 @@ export const loadQualitiesList = () => async (dispatch, getState) => {
 };
 
 export const getQualities = () => (state) => {
-    return state.qualitiesReducer.entities;
+    return state.qualities.entities;
 };
 export const getQualitiesLoadingStatus = () => (state) =>
-    state.qualitiesReducer.isLoading;
+    state.qualities.isLoading;
 export const getQualitiesById = (ids) => (state) => {
-    if (state.qualitiesReducer.entities) {
+    if (state.qualities.entities) {
         const qualitiesArray = [];
         for (const id of ids) {
-            for (const quality of state.qualitiesReducer.entities) {
+            for (const quality of state.qualities.entities) {
                 if (quality._id === id) {
                     qualitiesArray.push(quality);
                     break;

@@ -4,16 +4,17 @@ import TextField from "../common/form/textField";
 import SelectField from "../common/form/selectField";
 import MultiSelectField from "../common/form/multiSelectField";
 import RadioField from "../common/form/radioFiels";
-import { useAuth } from "../../hooks/useAuth";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getQualities, getQualitiesLoadingStatus } from "../../store/qualities";
 import {
     getProfessions,
     getProfessionsLoadingStatus
 } from "../../store/professions";
+import { getCurrentUserData, updateUser } from "../../store/users";
 
 const EditUserPage = () => {
-    const { currentUser, updateUserData } = useAuth();
+    const dispatch = useDispatch();
+    const currentUser = useSelector(getCurrentUserData());
     const [user, setUser] = useState({
         _id: currentUser._id,
         name: currentUser.name,
@@ -38,8 +39,7 @@ const EditUserPage = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        await updateUserData(user);
-        history.push("/users/" + currentUser._id);
+        dispatch(updateUser(user));
     };
     function transformData(array) {
         return array.map((i) => ({ label: i.name, value: i._id }));

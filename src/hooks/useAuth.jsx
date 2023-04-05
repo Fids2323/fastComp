@@ -124,6 +124,7 @@ const AuthProvider = ({ children }) => {
     async function updateUserData(newData) {
         try {
             const { content } = await userService.update(newData);
+            console.log(content);
             setUser(content);
             if (newData.email !== currentUser.email) {
                 const { data } = await httpAuth.post("accounts:update", {

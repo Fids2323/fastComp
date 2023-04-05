@@ -37,7 +37,7 @@ function isOutdated(date) {
 }
 
 export const loadProfessionsList = () => async (dispatch, getState) => {
-    const { lastFetch } = getState().professionsReducer;
+    const { lastFetch } = getState().professions;
     if (isOutdated(lastFetch)) {
         dispatch(professionsRequested());
         try {
@@ -50,14 +50,14 @@ export const loadProfessionsList = () => async (dispatch, getState) => {
 };
 
 export const getProfessions = () => (state) => {
-    return state.professionsReducer.entities;
+    return state.professions.entities;
 };
 export const getProfessionsLoadingStatus = () => (state) => {
-    return state.professionsReducer.isLoading;
+    return state.professions.isLoading;
 };
 export const getProfessionById = (id) => (state) => {
-    if (state.professionsReducer.entities) {
-        for (const profession of state.professionsReducer.entities) {
+    if (state.professions.entities) {
+        for (const profession of state.professions.entities) {
             if (profession.id === id) {
                 return profession;
             }

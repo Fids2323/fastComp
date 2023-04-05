@@ -5,51 +5,51 @@ import { toast } from "react-toastify";
 const UserContext = React.createContext();
 
 export const useUsers = () => {
-    return useContext(UserContext);
+  return useContext(UserContext);
 };
 const UserProvider = ({ children }) => {
-    const [users, setUsers] = useState(null);
-    const [isLoading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const [users, setUsers] = useState(null);
+  const [isLoading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        getUsers();
-    }, []);
+  useEffect(() => {
+    getUsers();
+  }, []);
 
-    useEffect(() => {
-        if (error !== null) {
-            toast(error);
-            setError(null);
-        }
-    }, [error]);
+  useEffect(() => {
+    if (error !== null) {
+      toast(error);
+      setError(null);
+    }
+  }, [error]);
 
-    async function getUsers() {
-        try {
-            const { content } = await userService.get();
-            setUsers(content);
-            setLoading(false);
-        } catch (error) {
-            errorCatcher(error);
-        }
+  async function getUsers () {
+    try {
+      const { content } = await userService.get();
+      setUsers(content);
+      setLoading(false);
+    } catch (error) {
+      errorCatcher(error);
     }
-    function errorCatcher(error) {
-        const { message } = error.response.data;
-        setError(message);
-    }
-    function getUserById(userId) {
-        return users.find((u) => u._id === userId);
-    }
-    return (
-        <UserContext.Provider value={{ users, getUserById }}>
-            {!isLoading ? children : "Загрузка..."}
-        </UserContext.Provider>
-    );
+  }
+  function errorCatcher (error) {
+    const { message } = error.response.data;
+    setError(message);
+  }
+  function getUserById (userId) {
+    return users.find((u) => u._id === userId);
+  }
+  return (
+    <UserContext.Provider value={{ users, getUserById }}>
+      {!isLoading ? children : "Загрузка..."}
+    </UserContext.Provider>
+  );
 };
 
 UserProvider.propTypes = {
-    children: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.node),
-        PropTypes.node
-    ])
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
 };
 export default UserProvider;

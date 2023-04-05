@@ -1,13 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import displayPublishedDate from "../../utils/displayPublishedDate";
-import { useUsers } from "../../hooks/useUsers";
-import { useAuth } from "../../hooks/useAuth";
-const Comment = ({ data, onDelete }) => {
-  const { getUserById } = useUsers();
-  const user = getUserById(data.userId);
-  const { currentUser } = useAuth();
+import { useSelector } from "react-redux";
+import { getCurrentUserId, getUserById } from "../../store/users";
 
+const Comment = ({ data, onDelete }) => {
+  const user = useSelector(getUserById(data.userId));
+  const currentUserId = useSelector(getCurrentUserId());
+  if (!user) {
+    return "Загрузка...";
+  }
   return (
     <div className="bg-light card-body  mb-3">
       <div className="row">
@@ -30,7 +32,7 @@ const Comment = ({ data, onDelete }) => {
                       - {displayPublishedDate(data.created_at)}
                     </span>
                   </p>
-                  {currentUser._id === data.userId && (
+                  {currentUserId === data.userId && (
                     <button
                       className="btn btn-sm text-primary d-flex align-items-center"
                       onClick={() => onDelete(data._id)}

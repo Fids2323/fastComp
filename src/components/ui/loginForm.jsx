@@ -3,32 +3,28 @@ import TextField from "../common/form/textField";
 // import { validator } from "../../utils/validator";
 import CheckBoxField from "../common/form/checkBoxField";
 import * as yup from "yup";
-import { useAuth } from "../../hooks/useAuth";
 import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/users";
 
 const LoginForm = () => {
+  const dispatch = useDispatch();
   const history = useHistory();
-  const { singIn } = useAuth();
+
   const [data, setData] = useState({ email: "", password: "", stayOn: false });
   const [errors, setErrors] = useState({});
   const handleChange = (target) => {
     setData((prevState) => ({ ...prevState, [target.name]: target.value }));
   };
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-    try {
-      await singIn(data);
-
-      history.push(
-        history.location.state !== undefined
-          ? history.location.state.from.pathname
-          : "/"
-      );
-    } catch (error) {
-      setErrors(error);
-    }
+    const redirect =
+      history.location.state !== undefined
+        ? history.location.state.from.pathname
+        : "/";
+    dispatch(login({ payload: data, redirect }));
   };
   useEffect(() => {
     validate();
